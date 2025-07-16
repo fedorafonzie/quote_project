@@ -1,7 +1,7 @@
 // src/routes/+layout.js
 import { API_URL } from '$lib/api.js';
 
-/** @type {import('@sveltejs/kit').LayoutLoad} */
+/** @type {import('@sveltejs/kit').Load} */
 export async function load({ fetch }) {
   try {
     const response = await fetch(`${API_URL}/api/sources/`);

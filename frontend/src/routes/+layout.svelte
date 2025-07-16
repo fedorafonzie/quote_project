@@ -13,7 +13,7 @@
 
 <div class="app-container">
   {#if isMenuOpen}
-    <div class="overlay" on:click={closeMenu} on:keydown on:keypress on:keyup />
+    <div class="overlay" role="button" tabindex="0" on:click={closeMenu} on:keydown on:keypress on:keyup></div>
   {/if}
 
   <aside class="nav-drawer" class:open={isMenuOpen}>
@@ -33,7 +33,7 @@
 
   <header class="app-header">
     <div class="header-left">
-      <button class="hamburger" on:click={toggleMenu}>
+      <button class="hamburger" aria-label="Open menu" on:click={toggleMenu}>
         <span></span>
         <span></span>
         <span></span>

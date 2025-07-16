@@ -1,18 +1,24 @@
-# /frontend/Dockerfile
+# frontend/Dockerfile
 
-### STAP 1: Bouw de Svelte App ###
+# Stap 1: Bouw de applicatie
 FROM node:18-alpine AS builder
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm install
-COPY . .
+COPY . ./
 RUN npm run build
 
-### STAP 2: Serveer de gebouwde app met Nginx ###
-FROM nginx:stable-alpine
-# Kopieer de gebouwde bestanden uit de 'builder' stap
-COPY --from=builder /app/build /usr/share/nginx/html
-# Optioneel: kopieer een eigen Nginx-config als je routing hebt
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Stap 2: Draai de applicatie
+FROM node:18-alpine
+WORKDIR /app
+
+# Kopieer de output van de build en de benodigde bestanden
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/node_modules ./node_modules
+COPY package.json .
+
+# De poort die de SvelteKit Node server gebruikt
+EXPOSE 3000
+
+# Het commando om de server te starten
+CMD ["node", "build"]

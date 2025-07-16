@@ -1,8 +1,6 @@
 // frontend/src/routes/source/[id]/+page.js
 import { API_URL } from '$lib/api.js';
 
-export const prerender = false;
-
 // Jouw JSDoc types - Dit is goede praktijk!
 /**
  * @typedef {{
@@ -50,7 +48,7 @@ export async function load({ fetch, params, url }) {
   } catch (error) {
     console.error(`Error fetching quotes for source ${sourceId}:`, error);
     return { 
-      error: error.message, 
+      error: error instanceof Error ? error.message : String(error), 
       quotes: [], 
       sourceName: "Error" 
     };
