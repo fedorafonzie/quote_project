@@ -20,6 +20,8 @@ services:
 
   ### DJANGO API SERVICE ###
   api:
+    env_file:
+     - .env
     build:
       context: ./api
     command: python manage.py runserver 0.0.0.0:8000

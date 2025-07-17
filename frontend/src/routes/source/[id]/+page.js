@@ -11,7 +11,6 @@ import { API_URL } from '$lib/api.js';
  * }} PaginatedQuotes
  */
 
-/** @type {import('./$types').PageLoad} */
 export async function load({ fetch, params, url }) {
   const sourceId = params.id;
   const page = url.searchParams.get('page') || '1';

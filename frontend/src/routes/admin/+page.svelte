@@ -1,10 +1,31 @@
+<!-- // frontend/src/routes/admin/+page.server.js -->
 <script>
   import { API_URL } from '$lib/api.js';
   export let data;
   let pendingQuotes = data.quotes || [];
 
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
   async function approveQuote(id) {
-    const response = await fetch(`${API_URL}/api/moderation/${id}/approve/`, { method: 'POST' });
+    const csrftoken = getCookie('csrftoken');
+    const response = await fetch(`${API_URL}/api/moderation/${id}/approve/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': csrftoken },
+      credentials: 'include', // <-- DEZE REGEL IS TOEGEVOEGD
+    });
     if (response.ok) {
       pendingQuotes = pendingQuotes.filter(q => q.id !== id);
     } else {
@@ -14,7 +35,12 @@
 
   async function deleteQuote(id) {
     if (!confirm('Weet je zeker dat je deze quote wilt verwijderen?')) return;
-    const response = await fetch(`${API_URL}/api/moderation/${id}/`, { method: 'DELETE' });
+    const csrftoken = getCookie('csrftoken');
+    const response = await fetch(`${API_URL}/api/moderation/${id}/`, {
+      method: 'DELETE',
+      headers: { 'X-CSRFToken': csrftoken },
+      credentials: 'include', // <-- DEZE REGEL IS TOEGEVOEGD
+    });
     if (response.ok) {
       pendingQuotes = pendingQuotes.filter(q => q.id !== id);
     } else {

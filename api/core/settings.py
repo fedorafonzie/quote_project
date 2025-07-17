@@ -141,11 +141,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Toestaan dat de frontend (op poort 5173) de API mag aanroepen
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',  # De URL van je nieuwe Svelte frontend
-    'http://localhost:5173',  # De URL van je oude Svelte dev server (kan handig zijn om te laten staan)
-]
+# Haal de lijst met toegestane origins op uit de environment variable
+allowed_origins_str = os.environ.get('ALLOWED_ORIGINS', '')
+ALLOWED_ORIGINS = allowed_origins_str.split(',') if allowed_origins_str else []
+
+CORS_ALLOWED_ORIGINS = ALLOWED_ORIGINS
+# Vertel Django dat POST/DELETE-verzoeken van deze URLs veilig zijn
+CSRF_TRUSTED_ORIGINS = ALLOWED_ORIGINS
+CORS_ALLOW_CREDENTIALS = True
 
 # reCAPTCHA instellingen
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
